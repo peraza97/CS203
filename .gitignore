@@ -1,3 +1,4 @@
-/*.o
-/*.memtrace
+*.o
+*.memtrace
+.DS_Store
 BranchPrediction/*.txt
