@@ -147,6 +147,28 @@ void PipelineStage::clear() {
 
 }
 
+
+void PipelineStage::process() {
+	
+	// Functionally simulate pipeline stage
+	// Since this simulator only models timing, this function currently does nothing
+	switch(stageType) {
+		case FETCH: 	// Fetch instruction. PC+4
+			break;
+		case DECODE: 	// Fetch register operands
+			break;
+		case EXEC: 	// Perform ALU operations
+			break;
+		case MEM:	// Load/Store from/to memory
+			break;
+		case WB:	// Writeback result operand to register
+			break;
+		default:
+			break;
+	}	
+
+}
+
 void PipelineStage::addInstruction(Instruction *newInst) {
 
 	inst = newInst;
@@ -175,8 +197,9 @@ bool Pipeline::hasDependency(void) {
 	if(pipeline[DECODE].inst->type == NOP)
 		return false;
 
-	// Checks if dependency exist between Decode stage and Exec, Mem, WB stage
-	for(int i = EXEC; i <= WB; i++) {
+	// Checks if dependency exist between Decode stage and Exec, Mem stage
+	// We assume the register file can read/write in the same cycle so no data dependency exist with RAW dependency if an instruction is in Decode and WB.
+	for(int i = EXEC; i < WB; i++) {
 
 		if( pipeline[i].inst == NULL )
 			continue;		
@@ -199,42 +222,51 @@ bool Pipeline::hasDependency(void) {
 void Pipeline::cycle(void) {
 
 	cycleTime += 1;
+	// Check for data hazards
+	// NOTE: Technically, data hazards are detected in the Decode stage. If a data hazard is detected, at the end of the cycle we write 0's (NOP) to the pipeline register so that a NOP will be generated in the EXEC stage in the next cycle. 
+	// Doing the check here does a dependency check on the instructions in the previous cycle (we haven't advanced the instructions in the pipeline yet). If a dependency exist in the previous cycle, we stall the pipeline in this cycle.
+	bool dependencyDetected = hasDependency();
 
 
-	// Writeback
-	pipeline[WB].clear();
-
-	// Mem -> WB
+	// WRITEBACK STAGE
+	// Mem -> WB Pipeline register
 	pipeline[WB].addInstruction(pipeline[MEM].inst);	
 
-	// Mem
-	pipeline[MEM].clear();
-	
-	// Exec -> Mem
+	// Writeback
+	pipeline[WB].process();
+
+	// MEM STAGE
+	// Exec -> Mem Pipeline register
 	pipeline[MEM].addInstruction(pipeline[EXEC].inst);	
 	
-	// Exec
-	pipeline[EXEC].clear();
-
-	// Check for data hazards
-	if(hasDependency()){
-		// If dependency detected, stall by inserting NOP instruction
+	// Mem
+	pipeline[MEM].process();
+	
+        // EXEC STAGE
+	// Decode -> Exec Pipeline register
+	// If dependency detected, stall by inserting NOP instruction
+	if(!dependencyDetected)
+		pipeline[EXEC].addInstruction(pipeline[DECODE].inst);	
+	else 
 		pipeline[EXEC].addInstruction(new Instruction());
-		return;
-	}
 	
-	// Decode -> Exec
-	pipeline[EXEC].addInstruction(pipeline[DECODE].inst);	
+	// Exec
+	pipeline[EXEC].process();
 	
+	// DECODE STAGE
+	// Fetch -> Decode Pipeline register
+	if(!dependencyDetected)
+		pipeline[DECODE].addInstruction(pipeline[FETCH].inst);	
+
 	// Decode 
-	pipeline[DECODE].clear();
+	pipeline[DECODE].process();
 	
-	// Fetch -> Decode
-	pipeline[DECODE].addInstruction(pipeline[FETCH].inst);	
-	
+	// FETCH STAGE
 	// Fetch
-	pipeline[FETCH].clear();
-	pipeline[FETCH].addInstruction(application->getNextInstruction());
+	if(!dependencyDetected){
+		pipeline[FETCH].addInstruction(application->getNextInstruction());
+		pipeline[FETCH].process();
+	}
 }
 
 bool Pipeline::done() {

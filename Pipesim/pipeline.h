@@ -74,6 +74,7 @@ class PipelineStage {
 		void clear();
 		void addInstruction(Instruction*);
 		void printStage();
+		void process();
 };
 
 
