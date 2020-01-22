@@ -1,7 +1,0 @@
-LW r1 r0
-LW r2 r0
-ADD r3 r1 r2
-SW r3 r0 
-LW r4 r0
-ADD r5 r1 r4 
-SW r5 r0
