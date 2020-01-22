@@ -207,12 +207,18 @@ bool Pipeline::hasDependency(void) {
 		if( pipeline[i].inst->type == NOP )
 			continue;
 
-		if( (pipeline[i].inst->dest != -1) && 
+		if(!forwarding && (pipeline[i].inst->dest != -1) && 
 		    (pipeline[i].inst->dest == pipeline[DECODE].inst->src1 ||
 		     pipeline[i].inst->dest == pipeline[DECODE].inst->src2) ) {
 			return true;
 		}
 
+		if(forwarding && (i == EXEC) &&
+			(pipeline[i].inst->dest != -1) && 
+		    (pipeline[i].inst->dest == pipeline[DECODE].inst->src1 ||
+		     pipeline[i].inst->dest == pipeline[DECODE].inst->src2) && pipeline[i].inst->type == LW){
+			return true;
+		}
 	}
 
 	return false;

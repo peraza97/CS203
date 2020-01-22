@@ -1,4 +1,5 @@
 *.o
 *.memtrace
 .DS_Store
+*.vscode
 BranchPrediction/*.txt
