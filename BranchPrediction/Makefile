@@ -1,17 +1,17 @@
 COMPILE = g++
 CFLAGS = -std=c++11
 
-branchism: app.o oneBit.o twoBit.o main.o 
-	$(COMPILE) $(CFLAGS) app.o oneBit.o twoBit.o main.o  -o branchism
+branchism: app.o predictor.o bht.o main.o 
+	$(COMPILE) $(CFLAGS) app.o predictor.o main.o  -o branchism
 
 app.o: app.cpp
 	$(COMPILE) $(CFLAGS) -c app.cpp
 
-oneBit.o: oneBit.cpp
-	$(COMPILE) $(CFLAGS) -c oneBit.cpp
+predictor.o: predictor.cpp
+	$(COMPILE) $(CFLAGS) -c predictor.cpp
 
-twoBit.o: twoBit.cpp
-	$(COMPILE) $(CFLAGS) -c twoBit.cpp
+bht.o: bht.cpp
+	$(COMPILE) $(CFLAGS) -c bht.cpp
 
 main.o: main.cpp
 	$(COMPILE) $(CFLAGS) -c main.cpp

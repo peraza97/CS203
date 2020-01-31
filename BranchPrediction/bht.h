@@ -1,13 +1,29 @@
-#include "twoBit.h"
+#ifndef __BHT_H_
+#define __BHT_H_
 
-vector<string> myNames = {"00", "01", "11", "10"};
+#include <iostream>
+#include <map>
+using namespace std;
 
-TwoBit::TwoBit(){
-    this->prediction = 0;
-    this->state = NT_00;
-}
+typedef map<unsigned short, unsigned char> table;
+typedef map<unsigned short, table> branchHistoryTable;
 
-void TwoBit::SM(bool input){
+class BHT{
+    private:
+        branchHistoryTable globalTables;
+        unsigned short history;
+        unsigned char nbit;
+
+    public:
+        BHT();
+        BHT(unsigned short, unsigned char); //short is history, char is nbit
+
+
+};
+
+#endif 
+
+/*void TwoBit::SM(bool input){
     //transistions
     switch(this->state){
         case NT_00:
@@ -53,10 +69,4 @@ void TwoBit::SM(bool input){
             break;
     }
 }
-
-void TwoBit::makePrediction(string addr, bool actualValue){
-    if(this->prediction == actualValue){
-        this->correct += 1;
-    }
-    this->total += 1;
-}
+*/
