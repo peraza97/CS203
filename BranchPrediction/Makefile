@@ -1,21 +1,17 @@
 COMPILE = g++
 CFLAGS = -std=c++11
+SRC_DIR = src
+OBJ_DIR = build
 
-branchism: app.o predictor.o bht.o main.o 
-	$(COMPILE) $(CFLAGS) app.o predictor.o bht.o main.o  -o branchism
+SRC_FILES = $(wildcard $(SRC_DIR)/*.cpp)
+OBJ_FILES = $(patsubst $(SRC_DIR)/%.cpp,$(OBJ_DIR)/%.o,$(SRC_FILES))
 
-app.o: app.cpp
-	$(COMPILE) $(CFLAGS) -c app.cpp
+branchism: $(OBJ_FILES)
+	$(COMPILE) $(CFLAGS) -o $@ $^
 
-predictor.o: predictor.cpp
-	$(COMPILE) $(CFLAGS) -c predictor.cpp
-
-bht.o: bht.cpp
-	$(COMPILE) $(CFLAGS) -c bht.cpp
-
-main.o: main.cpp
-	$(COMPILE) $(CFLAGS) -c main.cpp
+$(OBJ_DIR)/%.o: $(SRC_DIR)/%.cpp
+	$(COMPILE) $(CFLAGS) -c -o $@ $<
 
 clean: 
-	rm *.o branchism
+	rm build/*
 
