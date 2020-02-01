@@ -3,10 +3,12 @@
 Application::Application(string fileName){
     this->fileName = fileName;
     this->count = 0;
+    printf("-----------------------------\n");
+    printf("Input text file: %s\n",fileName.c_str());
+    printf("------------------------------\n");
 }
 
 void Application::InitApplication(){
-    cout << "Opening file: " << this->fileName << endl;
     this->inputStream.open(this->fileName.c_str());
     if(!this->inputStream.is_open()){
         cout << "error opening file: " << this->fileName << endl;

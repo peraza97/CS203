@@ -11,30 +11,32 @@ using namespace std;
 
 int main(int argc, char ** argv){
 	int opt;
-	int m = 0;
-    int n = 0;
-	string fileName = "text/gcc-10K.txt";
-	while ((opt = getopt(argc,argv,"f:m:n:")) != EOF){
+	unsigned char m = 0; //branch history (up to 12)
+    unsigned char n = 1; //n-bit predictor ( 1 or 2)
+    unsigned char addressBits = 8; //how many bits of address is used (up to 12)
+    bool debug = false;
+	string fileName = "text/test.txt";
+	while ((opt = getopt(argc,argv,"f:m:n:a:d")) != EOF){
         switch(opt){
             case 'f': fileName.assign(optarg); break;
-            case 'm': atoi(optarg); break;
-            case 'n': atoi(optarg); break;
-            case '?': cout << "usuage is \n -f fileName : to run input file fileName \n -p : predictor type (1. 1 bit predictor, 2. 2 bit predictor, 3. Correlating predictor) " << endl;
+            case 'm': m = atoi(optarg); break;
+            case 'n': n = atoi(optarg); break;
+            case 'a': addressBits = atoi(optarg); break;
+            case 'd': debug = true; break;
+            case '?': printf("usuage is \n -f : fileName \n -m : history\n -n : n-bit\n -a : address length\n");
             default: exit(1);
         }
     }
     Application app(fileName);
     app.InitApplication();
-    
-    string addr = "";
-    bool result = 0;
+    Predictor pred(m,n, addressBits, debug);
 
+    string address = "";
+    bool expected;
     while(!app.done()){
-        app.getBranch(addr, result);
+        app.getBranch(address,expected);
+        pred.makePrediction(address,expected);
     }
-
-    Predictor pred(m,n);
     pred.printRates();
-
     return 0;
 }

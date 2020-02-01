@@ -1,72 +1,32 @@
 #ifndef __BHT_H_
 #define __BHT_H_
 
+#include <stdio.h>
 #include <iostream>
 #include <map>
 using namespace std;
 
-typedef map<unsigned short, unsigned char> table;
-typedef map<unsigned short, table> branchHistoryTable;
+typedef map<unsigned short, unsigned char> branchHistoryTable;
+typedef map<unsigned short, branchHistoryTable> GlobalBranchHistoryTables;
+
+enum singleBit: unsigned char {NT_0, T_1};
+enum twoBit: unsigned char{NT_00,NT_01, T_11, T_10};
 
 class BHT{
     private:
-        branchHistoryTable globalTables;
+        GlobalBranchHistoryTables globalTables;
+        unsigned char historyBits;
+        unsigned char (*NBitFunction)(unsigned char,bool); //n-bit predictor function updates state with bool
+        unsigned char (*prediction)(unsigned char); //converting states to 0 or 1 prediction
+        string (*strConversion)(unsigned char); //converting states to 0 or 1 prediction
+        
         unsigned short history;
-        unsigned char nbit;
+        bool debug;
+        void updateHistory(bool); //updat the history
 
     public:
-        BHT();
-        BHT(unsigned short, unsigned char); //short is history, char is nbit
-
-
+        BHT(unsigned char, unsigned char, bool); //short is history length, char is nbit
+        bool predictBranch(unsigned short,bool);
 };
 
 #endif 
-
-/*void TwoBit::SM(bool input){
-    //transistions
-    switch(this->state){
-        case NT_00:
-            if(input){
-                this->state = NT_01;
-            }
-            break;
-        case NT_01:
-            if(input){
-                this->state = T_11;
-            }
-            else{
-                this->state = NT_00;
-            }
-            break;
-        case T_11:
-            if(!input){
-                this->state = T_10;
-            }
-            break;
-        case T_10:
-            if(input){
-                this->state = T_11;
-            }
-            else{
-                this->state = NT_00;
-            }
-            break;
-        default:
-            break;
-    }
-    //actions
-    switch(this->state){
-        case NT_00:
-        case NT_01:
-            this->prediction = 0;
-            break;
-        case T_10:
-        case T_11:
-            this->prediction = 1;
-            break;
-        default:
-            break;
-    }
-}
-*/
