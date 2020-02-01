@@ -6,7 +6,7 @@ OBJ_DIR = build
 SRC_FILES = $(wildcard $(SRC_DIR)/*.cpp)
 OBJ_FILES = $(patsubst $(SRC_DIR)/%.cpp,$(OBJ_DIR)/%.o,$(SRC_FILES))
 
-branchism: $(OBJ_FILES)
+$(OBJ_DIR)/branchism: $(OBJ_FILES)
 	$(COMPILE) $(CFLAGS) -o $@ $^
 
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.cpp

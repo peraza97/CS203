@@ -17,7 +17,8 @@ class BHT{
         
         unsigned short history;
         bool debug;
-        void updateHistory(bool); //updat the history
+        string getBinary(unsigned short); // get binary rep. of history
+        void updateHistory(bool); //update the history
 
     public:
         BHT(unsigned char, unsigned char, bool); //short is history length, char is nbit

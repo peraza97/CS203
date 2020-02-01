@@ -7,10 +7,9 @@ Predictor::Predictor(unsigned char m, unsigned char n, unsigned char addrLength,
     this->correct = 0;
     this->total = 0;
     this->debug = debug;
-    printf("-----------------------------\n");
     printf("Predictor Information\n");
     printf("Bits used for address: %u\n", this->addrLength);
-    printf("debug mode: %u\n", this->debug);
+    printf("Predictor debug mode: %u\n", this->debug);
     printf("------------------------------\n");
 };
 
@@ -47,6 +46,6 @@ void Predictor::printRates(){
         printf("Error, total = 0\n");
     }
     else{
-        printf("Misclassification rate: %.3f\n", 1 - (double)(this->correct)/this->total);
+        printf("Misclassification rate: %.3f%%\n", 100.00 * (1 - (double)(this->correct)/this->total));
     }
 }
