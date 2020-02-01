@@ -1,4 +1,5 @@
-#include "nBit.h"
+#include "util.h"
+
 unsigned char oneBitSM(unsigned char state, bool input){
     switch (state)
     {
@@ -96,4 +97,28 @@ string twoBitStr(unsigned char input){
             return "T_11";
     }
     return "ERROR";
+}
+
+/*
+value: value to be converted
+maxBits: puts a place marker after k LSB
+start: puts '*' on bits we do not care about
+*/
+string getBinary(unsigned short value, unsigned char maxBits, unsigned char stars){
+    string bin(16,'*');
+    unsigned short temp = value;
+    int i;
+    for(i = 15; i >= 0; --i){
+        bin[i] = temp & 0x01 ? '1' : '0';
+        temp >>= 1;
+    }
+    bin.insert((16 - maxBits),1,'|');    
+    
+    if(stars){
+        for(i = 0; bin.at(i)!='|'; ++i){
+            bin.at(i) = '*';
+        }
+    }
+    
+    return bin;
 }

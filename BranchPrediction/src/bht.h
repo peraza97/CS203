@@ -4,7 +4,7 @@
 #include <stdio.h>
 #include <iostream>
 #include <map>
-#include "nBit.h"
+#include "util.h"
 using namespace std;
 
 class BHT{
@@ -17,7 +17,6 @@ class BHT{
         
         unsigned short history;
         bool debug;
-        string getBinary(unsigned short); // get binary rep. of history
         void updateHistory(bool); //update the history
 
     public:

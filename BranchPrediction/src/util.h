@@ -1,5 +1,5 @@
-#ifndef __NBIT_H__
-#define __NBIT_H__
+#ifndef __UTIL_H__
+#define __UTIL_H__
 
 #include <iostream>
 #include <map>
@@ -19,5 +19,7 @@ unsigned char twoBitPrediction(unsigned char input);
 
 string oneBitStr(unsigned char input);
 string twoBitStr(unsigned char input);
+
+string getBinary(unsigned short, unsigned char, unsigned char);
 
 #endif

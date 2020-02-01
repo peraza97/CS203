@@ -1,6 +1,8 @@
 #ifndef __BRANCH_H_
 #define __BRANCH_H_
 #include "bht.h"
+#include "util.h"
+
 #include <iostream>
 using namespace std;
 
@@ -8,11 +10,10 @@ class Predictor{
     private:
 
         BHT branchHistoryTable; //keep a record of my branch history table
-        unsigned char addrLength; //number of bits of address used to index
+        unsigned char addrBits; //number of bits of address used to index
         int correct;
         int total;
         bool debug;
-
         unsigned short convertAddress(string);
 
     public:
