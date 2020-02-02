@@ -23,7 +23,7 @@ int main(int argc, char ** argv){
             case 'n': n = atoi(optarg); break;
             case 'a': addressBits = atoi(optarg); break;
             case 'd': debug = true; break;
-            case '?': printf("usuage is \n -f : fileName \n -m : history\n -n : n-bit\n -a : address length\n");
+            case '?': printf("usuage is \n -f : fileName \n -m : history length\n -n : n-bit\n -a : address length\n");
             default: exit(1);
         }
     }

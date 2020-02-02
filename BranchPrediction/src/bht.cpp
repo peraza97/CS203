@@ -14,11 +14,8 @@ BHT::BHT(unsigned char historyLength, unsigned char nbit, bool debug){
         this->prediction = &twoBitPrediction;
         this->strConversion = &twoBitStr;
     }
-    printf("BHT Information\n");
-    printf("Bits used for history: %u\n", this->historyBits);
-    printf("History starts at: %u\n", this->history);
-    printf("N-bit predictor: %u\n", nbit);
-    printf("BHT debug mode: %u\n\n", this->debug);
+    printf("History length: %u\n", this->historyBits);
+    printf("Predictor: %u-bit\n", nbit);
 }
 
 void BHT::updateHistory(bool expected){

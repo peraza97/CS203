@@ -3,13 +3,12 @@
 #include <iomanip>
 
 Predictor::Predictor(unsigned char m, unsigned char n, unsigned char addrLength, bool debug): branchHistoryTable(m,n,debug){
-    this->addrBits = addrLength;
+    this->addrBits = addrLength > 16 ? 16 : addrLength;
     this->correct = 0;
     this->total = 0;
     this->debug = debug;
-    printf("Predictor Information\n");
-    printf("Bits used for address: %u\n", this->addrBits);
-    printf("Predictor debug mode: %u\n", this->debug);
+    printf("Address length: %u\n", this->addrBits);
+    printf("Debug mode: %u\n", this->debug);
     printf("------------------------------\n");
 };
 
