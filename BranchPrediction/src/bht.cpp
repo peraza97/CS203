@@ -43,3 +43,11 @@ bool BHT::predictBranch(unsigned short address, bool expected){
 
     return predictedValue == expected;
 }
+
+unsigned long BHT::numEntries(){
+    unsigned long count = 0;
+    for (GlobalBranchHistoryTables::iterator it = this->globalTables.begin(); it != this->globalTables.end(); it++ ){
+        count += it->second.size();
+    }
+    return count;
+}

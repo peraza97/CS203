@@ -22,6 +22,7 @@ void Predictor::printRates(){
     else{
         printf("Misclassification rate: %.3f%%\n", 100.00 * (1 - (double)(this->correct)/this->total));
     }
+    printf("BHT used %lu entries\n",this->branchHistoryTable.numEntries());
 }
 
 unsigned short Predictor::convertAddress(string input){

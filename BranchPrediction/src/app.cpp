@@ -3,7 +3,6 @@
 Application::Application(string fileName){
     this->fileName = fileName;
     this->count = 0;
-    printf("-----------------------------\n");
     printf("Input text file: %s\n",fileName.c_str());
 }
 
@@ -35,4 +34,9 @@ void Application::getBranch(string &addr, bool& result){
     addr = this->addresses.at(this->count);
     result = this->results.at(this->count);
     this->count += 1;
+}
+
+unsigned long Application::getNumUniqueInstructions(){
+    set<string> unique(this->addresses.begin(),this->addresses.end());
+    return unique.size();
 }

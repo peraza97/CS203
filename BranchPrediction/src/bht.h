@@ -22,6 +22,7 @@ class BHT{
     public:
         BHT(unsigned char, unsigned char, bool); //short is history length, char is nbit
         bool predictBranch(unsigned short,bool);
+        unsigned long numEntries();
 };
 
 #endif 

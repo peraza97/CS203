@@ -29,6 +29,7 @@ int main(int argc, char ** argv){
     }
     Application app(fileName);
     app.InitApplication();
+    printf("Unique addresses: %lu\n", app.getNumUniqueInstructions());
     Predictor pred(m,n, addressBits, debug);
 
     string address = "";
