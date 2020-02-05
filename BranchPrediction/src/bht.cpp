@@ -1,8 +1,6 @@
 #include "bht.h"
 
-BHT::BHT(unsigned char historyLength, unsigned char nbit, bool debug){
-    this->historyBits = historyLength;
-    this->history = 0;
+BHT::BHT(unsigned char nbit, bool debug){
     this->debug = debug;
     if(nbit == 1){
         this->NBitFunction = &oneBitSM;
@@ -14,31 +12,19 @@ BHT::BHT(unsigned char historyLength, unsigned char nbit, bool debug){
         this->prediction = &twoBitPrediction;
         this->strConversion = &twoBitStr;
     }
-    printf("History length: %u\n", this->historyBits);
-    printf("Predictor: %u-bit\n", nbit);
+    printf("BHT: %u-bit\n", nbit);
 }
 
-void BHT::updateHistory(bool expected){
-    history = history << 1;
-    history = history | expected;
-    history = history << (16 - this->historyBits);
-    history = history >> (16 - this->historyBits);
-}
-
-bool BHT::predictBranch(unsigned short address, bool expected){
-    unsigned short oldHistory = this->history; //keep record of history for debugging
-    unsigned char prevState = this->globalTables[this->history][address]; //get the last state
+bool BHT::predictBranch(unsigned short history, unsigned short address, bool expected){
+    unsigned char prevState = this->globalTables[history][address]; //get the last state
     unsigned char predictedValue = prediction(prevState); //convert this into a prediction
     unsigned char newState = this->NBitFunction(prevState,expected); //assign a new state, based on expected and old state
-    this->globalTables[this->history][address] = newState; //update with state
-    updateHistory(expected);
+    this->globalTables[history][address] = newState; //update with state
 
-    if(this->debug){       
-        printf("history: %s\n", getBinary(oldHistory,this->historyBits,1).c_str());
-        printf("globaltables[%u][%u] = %s\n", oldHistory, address, strConversion(prevState).c_str());
-        printf("%s prediction: %u\n", strConversion(prevState).c_str(), predictedValue);    
-        printf("updated globaltables[%u][%u]:: %s\n", oldHistory, address, strConversion(newState).c_str());       
-        printf("updated history:: %s\n", getBinary(this->history, this->historyBits,1).c_str());
+    if(this->debug){   
+        printf("globaltables[%u][%u] = %s\n", history, address, strConversion(prevState).c_str());
+        printf("%s prediction: %u => %s\n", strConversion(prevState).c_str(), predictedValue,(predictedValue == expected ? "Correct": "Wrong") );    
+        printf("updated globaltables[%u][%u] = %s\n", history, address, strConversion(newState).c_str());       
     }
 
     return predictedValue == expected;

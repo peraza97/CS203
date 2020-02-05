@@ -3,7 +3,6 @@
 Application::Application(string fileName){
     this->fileName = fileName;
     this->count = 0;
-    printf("Input text file: %s\n",fileName.c_str());
 }
 
 void Application::InitApplication(){

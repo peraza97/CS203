@@ -1,0 +1,8 @@
+echo "(0,1) Predictor"
+./build/branchism -f $1 -m 0 -n 1 | grep "Misclassification"
+echo "(0,2) Predictor"
+./build/branchism -f $1 -m 0 -n 2 | grep "Misclassification"
+echo "(6,1) Predictor"
+./build/branchism -f $1 -m 6 -n 1 | grep "Misclassification"
+echo "(6,2) Predictor"
+./build/branchism -f $1 -m 6 -n 2 | grep "Misclassification" 
