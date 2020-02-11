@@ -1,12 +1,12 @@
-# MnistClassifier
-
 ## Installation
+
+To compile the project, run the following command in top level directory
 ```sh
 make
 ```
 
 ## Usage
-run the following command
+run the following command in the top level directory
 ```sh
 $ ./build/branchism -f <file> -m <history> -n <n-bit predictor> -a <address bits>
 ```
