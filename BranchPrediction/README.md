@@ -1,5 +1,3 @@
-# MnistClassifier
-
 ## Installation
 ```sh
 make
