@@ -29,12 +29,11 @@ int main(int argc, char ** argv){
     }
     Application app(fileName);
     app.InitApplication();
-    Predictor pred(m,n, addressBits, debug);
-
     string address = "";
     bool expected;
-    while(!app.done()){
-        app.getBranch(address,expected);
+
+    Predictor pred(m,n, addressBits, debug);
+    while(app.getBranch(address,expected)){
         pred.makePrediction(address,expected);
     }
     pred.printRates();
