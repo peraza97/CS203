@@ -1,5 +1,34 @@
 #include "util.h"
 
+uint32_t convertSizeInput(string input){
+    uint32_t result = 0;
+    int position = 0;
+    for(position = 0; position < input.size(); ++position){
+        if(!isdigit(input.at(position))){
+            break;
+        }
+    }
+    result = atoi(input.substr(0,position).c_str());
+    if(ceil(log2(result)) != floor(log2(result))){
+        return 0;
+    }
+    int bits = log2(result);
+    string suffix = input.substr(position);
+    if(suffix == "" || suffix == "B"){
+        bits += 0;
+    }
+    else if(suffix == "KB"){
+        bits += 10;
+    }
+    else if(suffix == "MB"){
+        bits += 20;
+    }
+    else{
+        return 0;
+    }
+    return pow(2, bits);
+}
+
 string getBinary(uint32_t value){
     string bin(ADDRESS_LENGTH,'*');
     uint32_t temp = value;

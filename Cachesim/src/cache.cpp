@@ -30,12 +30,16 @@ Cache::Cache(int cacheSize, int blockSize, int nWays, bool debug){
     printf("------------------\n");
 }
 
-address_t Cache::parseAddress(string address){
+bits_t Cache::parseAddress(string address, int addressOffset){
     istringstream converter(address);
     uint64_t conversion;
     uint32_t conversion32;
     converter >> std::hex >> conversion;
+
+    //add the addressOffset to the address
+    conversion += addressOffset;
     conversion32 = (uint32_t)(conversion);
+
     /*calculate the offset */ 
     uint64_t offset = conversion32 << (ADDRESS_LENGTH - this->offsetBits); 
     offset = offset >> (ADDRESS_LENGTH - this->offsetBits);
@@ -49,11 +53,13 @@ address_t Cache::parseAddress(string address){
 
     if(this->debug){
         printf("Address: %s\n",address.c_str());
+        printf("Offset: %d\n",addressOffset);
+        printf("address - offest: %lu\n",(unsigned long)conversion32);
         printf("%s\n", formatAddress(conversion32,this->tagBits, this->indexbits, this->offsetBits).c_str() );   
         printf("offset: %lu\n",(unsigned long)offset);
         printf("index: %lu\n",(unsigned long)index);
         printf("tag: %lu\n",(unsigned long)tag);   
     }  
-    address_t parts = { (uint32_t)tag, (uint32_t)index, (uint32_t)offset} ;
+    bits_t parts = { (uint32_t)tag, (uint32_t)index, (uint32_t)offset} ;
     return parts;
 }

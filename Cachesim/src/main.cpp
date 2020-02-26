@@ -13,21 +13,30 @@ int main(int argc, char ** argv){
 	int opt;
 
 	string fileName = "files/test.txt";
+    string cacheString = "4KB";
+    string blockString = "16B";
+    int nWays = 1;
     bool debug = false;
-    int cacheSize = 65536;
-    int blockSize = 16;
-    int nWays = 2;
+
 	while ((opt = getopt(argc,argv,"f:c:b:w:d")) != EOF){
         switch(opt){
             case 'f': fileName.assign(optarg); break;
-            case 'c': cacheSize = atoi(optarg); break;
-            case 'b': blockSize = atoi(optarg); break;
+            case 'c': cacheString.assign(optarg); break;
+            case 'b': blockString.assign(optarg); break;
             case 'w': nWays = atoi(optarg); break;
             case 'd': debug = true; break;
             case '?': printf("usuage is \n -f : fileName \n -c : cache size\n -b : block size\n -w : N-ways\n");
             default: exit(1);
         }
     }
+
+    int cacheSize = convertSizeInput(cacheString);
+    int blockSize = convertSizeInput(blockString);
+    if(cacheSize == 0 || blockSize == 0 || (cacheSize < blockSize)){
+        printf("Error assigning cacheSize or block size\n");
+        return -1;
+    }
+
     Application app(fileName);
     app.InitApplication();
 
@@ -35,13 +44,9 @@ int main(int argc, char ** argv){
     int offset;
     string address = "";
     Cache myCache(cacheSize, blockSize, nWays, debug);
-    app.getMemoryAccess(memType, offset, address);
-    myCache.parseAddress(address);
-    /*
     while(app.getMemoryAccess(memType, offset, address)){
-        printf("%u %d %s\n", memType, offset, address.c_str());
+        myCache.parseAddress(address, offset);
     }
-    */
 
     return 0;
 }

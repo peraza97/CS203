@@ -12,7 +12,7 @@
 
 using namespace std;
 
-struct address_t{
+struct bits_t{
     uint32_t tag;
     uint32_t index;
     uint32_t offset;
@@ -30,7 +30,7 @@ class Cache{
         int totalAccesses;
     public:
         Cache(int, int, int,bool);
-        address_t parseAddress(string);
+        bits_t parseAddress(string, int);
 
 };
 

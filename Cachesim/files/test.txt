@@ -1,3 +1,1 @@
 L -200 7fffe7ff088
-L 0 7fffe7fefd0
-L 8 12ff228
