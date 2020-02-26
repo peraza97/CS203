@@ -23,6 +23,7 @@ Cache::Cache(int cacheSize, int blockSize, int nWays, bool debug){
 
     this->sets = pow(2,this->indexbits);
     this->tagBits = ADDRESS_LENGTH - this->indexbits - this->offsetBits;
+
     printf("------------------\n");
     printf("Cache size: %d\nBlock Size: %d\nSets: %d\nWays: %d\nTag bits: %d\nIndex bits: %d\nOffset bits: %d\n", 
             this->cacheSize, this->blockSize, this->sets, this->nWays, this->tagBits, this->indexbits, this->offsetBits);
@@ -47,11 +48,12 @@ address_t Cache::parseAddress(string address){
     uint64_t tag = conversion32 >> (this->offsetBits + this->indexbits);
 
     if(this->debug){
-        printf("Going to parse: %s\n",address.c_str());
-        printf("parsed to 32 bits: %lu\n",(unsigned long)conversion32);   
+        printf("Address: %s\n",address.c_str());
+        printf("%s\n", formatAddress(conversion32,this->tagBits, this->indexbits, this->offsetBits).c_str() );   
         printf("offset: %lu\n",(unsigned long)offset);
         printf("index: %lu\n",(unsigned long)index);
         printf("tag: %lu\n",(unsigned long)tag);   
-    }   
-    return {(uint32_t)tag, (uint32_t)index, (uint32_t)offset};
+    }  
+    address_t parts = { (uint32_t)tag, (uint32_t)index, (uint32_t)offset} ;
+    return parts;
 }
