@@ -35,6 +35,8 @@ int main(int argc, char ** argv){
     int offset;
     string address = "";
     Cache myCache(cacheSize, blockSize, nWays, debug);
+    app.getMemoryAccess(memType, offset, address);
+    myCache.parseAddress(address);
     /*
     while(app.getMemoryAccess(memType, offset, address)){
         printf("%u %d %s\n", memType, offset, address.c_str());

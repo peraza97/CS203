@@ -3,13 +3,14 @@ CFLAGS = -std=c++11
 SRC_DIR = src
 OBJ_DIR = obj
 RM = rm 
+EXECUTABLE = cachesim
 
 SRC_FILES = $(wildcard $(SRC_DIR)/*.cpp)
 OBJ_FILES = $(patsubst $(SRC_DIR)/%.cpp,$(OBJ_DIR)/%.o,$(SRC_FILES))
 
-all: $(OBJ_DIR)/cachesim
+all: $(OBJ_DIR)/$(EXECUTABLE)
 
-$(OBJ_DIR)/cachesim: $(OBJ_FILES)
+$(OBJ_DIR)/$(EXECUTABLE): $(OBJ_FILES)
 	$(COMPILE) $(CFLAGS) -o $@ $^
 
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.cpp | $(OBJ_DIR)
