@@ -4,7 +4,7 @@ Cache::Cache(int cacheSize, int blockSize, int nWays, bool debug){
     this->cacheSize = cacheSize;
     this->blockSize = blockSize;
     this->nWays = nWays;
-    this->misses = 0;
+    this->hits = 0;
     this->totalAccesses = 0;
     this->debug = debug;
 
@@ -24,10 +24,10 @@ Cache::Cache(int cacheSize, int blockSize, int nWays, bool debug){
     this->sets = pow(2,this->indexbits);
     this->tagBits = ADDRESS_LENGTH - this->indexbits - this->offsetBits;
 
-    printf("------------------\n");
+    printf("------------------------------\n");
     printf("Cache size: %d\nBlock Size: %d\nSets: %d\nWays: %d\nTag bits: %d\nIndex bits: %d\nOffset bits: %d\n", 
             this->cacheSize, this->blockSize, this->sets, this->nWays, this->tagBits, this->indexbits, this->offsetBits);
-    printf("------------------\n");
+    printf("------------------------------\n");
 }
 
 bits_t Cache::parseAddress(string address, int addressOffset){
@@ -62,4 +62,94 @@ bits_t Cache::parseAddress(string address, int addressOffset){
     }  
     bits_t parts = { (uint32_t)tag, (uint32_t)index, (uint32_t)offset} ;
     return parts;
+}
+
+void Cache::printCacheLine(cacheLine c){
+    for(int i = 0; i < c.size(); ++i){
+        printf("%s\t", c[i].str().c_str());
+    }
+    printf("\n"); 
+}
+
+cacheLine Cache::populateLine(){
+    cacheLine result;
+    for(int i = 0; i < this->nWays; ++i){
+        result.push_back({0,0,0,0});
+    }
+    return result;
+}
+
+bool Cache::accessCache(uint32_t tag, uint32_t index){
+    if(this->cacheSets[index].size() == 0){
+        this->cacheSets[index] = this->populateLine();
+    }
+    cacheLine line = this->cacheSets[index];
+    cacheLine before = line;
+
+    int pos = -1;
+    int validPos = -1;
+    int maxPos = 0;
+    //iterate over the cacheSet
+    for(int i = 0; i < this->nWays; ++i){
+        if(!line.at(i).validBit){
+            validPos = i;
+            break;
+        }
+        else if(line.at(i).validBit && line.at(i).tag == tag){
+                pos = i;
+        }
+        else{
+            line.at(i).lruBit+=1; //increment its lru bit
+            if(line.at(i).lruBit > line.at(maxPos).lruBit){
+                maxPos = i;
+            }
+        }
+    }
+    if(pos != -1){
+        line.at(pos).lruBit = 0;
+    }
+    else if(pos == -1 && validPos != -1){
+        line.at(validPos).validBit = 1;
+        line.at(validPos).tag = tag;
+        line.at(validPos).lruBit = 0;    
+    }
+    else{
+        line.at(maxPos).tag = tag;
+        line.at(maxPos).lruBit = 0;
+    }
+
+    if(this->debug){
+        printf("\nCacheLine Update:\n");
+        this->printCacheLine(before);
+        this->printCacheLine(line);
+    }
+    this->cacheSets[index] = line;
+    return pos != -1;
+}
+
+void Cache::checkCache(string address, int addressOffset){
+    bits_t bits = this->parseAddress(address, addressOffset);
+    bool hit = this->accessCache(bits.tag, bits.index);
+    if(hit){
+        this->hits += 1;
+    }
+    this->totalAccesses += 1;
+    if(this->debug){
+        printf("\n%s\n", (hit ? "Hit" : "Miss"));
+        printf("------------------------------\n");
+    }
+}
+
+void Cache::printRates(){ 
+    printf("------------------------------\n"); 
+    if(this->totalAccesses == 0){
+        printf("Error, Cannot get rate \n");
+    }
+    else{
+        printf("Misclassification rate: %.2f%%\n", 100.00 * (1 - (double)(this->hits)/this->totalAccesses));
+    } 
+    if(this->debug){
+    printf("Hits: %d\n", this->hits);
+    printf("total: %d\n",this->totalAccesses);
+    }
 }
