@@ -3,7 +3,6 @@
 Cache::Cache(int cacheSize, int blockSize, int nWays, bool debug){
     this->cacheSize = cacheSize;
     this->blockSize = blockSize;
-    this->nWays = nWays;
     this->hits = 0;
     this->totalAccesses = 0;
     this->debug = debug;
@@ -14,11 +13,14 @@ Cache::Cache(int cacheSize, int blockSize, int nWays, bool debug){
     //fully associative
     if(nWays == 0){
         this->indexbits = 0;
+        this->nWays = this->cacheSize/this->blockSize;
+
     }
     else{
         int cacheBits = log2(cacheSize);
-        int tempWays = log2(nWays);
-        this->indexbits = cacheBits - this->offsetBits - tempWays;
+        this->nWays = nWays;
+        int waysBits = log2(nWays);
+        this->indexbits = cacheBits - this->offsetBits - waysBits;
     }
 
     this->sets = pow(2,this->indexbits);
