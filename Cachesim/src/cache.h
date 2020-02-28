@@ -15,8 +15,8 @@
 using namespace std;
 
 struct block{
-    int validBit;
-    int lruBit;
+    uint32_t validBit;
+    uint32_t lruBit;
     uint32_t tag;
     int data;
     string str(){
@@ -43,7 +43,7 @@ class Cache{
         int sets;
         int nWays; //1: direct, 0: fully associative
         bool debug;
-        int indexbits, tagBits, offsetBits; 
+        int indexbits, tagBits, offsetBits; //bit assignment
         int hits;
         int totalAccesses;
         cache_t cacheSets;

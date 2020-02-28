@@ -35,11 +35,12 @@ Cache::Cache(int cacheSize, int blockSize, int nWays, bool debug){
 bits_t Cache::parseAddress(string address, int addressOffset){
     istringstream converter(address);
     uint64_t conversion;
-    uint32_t conversion32;
     converter >> std::hex >> conversion;
 
     //add the addressOffset to the address
     conversion += addressOffset;
+
+    uint32_t conversion32;
     conversion32 = (uint32_t)(conversion);
 
     /*calculate the offset */ 
@@ -56,7 +57,7 @@ bits_t Cache::parseAddress(string address, int addressOffset){
     if(this->debug){
         printf("Address: %s\n",address.c_str());
         printf("Offset: %d\n",addressOffset);
-        printf("address - offest: %lu\n",(unsigned long)conversion32);
+        printf("address + offest: %lu\n",(unsigned long)conversion32);
         printf("%s\n", formatAddress(conversion32,this->tagBits, this->indexbits, this->offsetBits).c_str() );   
         printf("offset: %lu\n",(unsigned long)offset);
         printf("index: %lu\n",(unsigned long)index);
@@ -85,24 +86,26 @@ bool Cache::accessCache(uint32_t tag, uint32_t index){
     if(this->cacheSets[index].size() == 0){
         this->cacheSets[index] = this->populateLine();
     }
-
+    if(this->debug){
+        printf("Before: \n");
+        this->printCacheLine(this->cacheSets[index]);
+    }
     int pos = -1;
     int validPos = -1;
     int maxPos = 0;
-    //iterate over the cacheSet
+
     for(int i = 0; i < this->nWays; ++i){
-        if(!this->cacheSets[index][i].validBit){
-            validPos = i;
-            break;
-        }
-        else if(this->cacheSets[index][i].validBit && this->cacheSets[index][i].tag == tag){
+        if(this->cacheSets[index][i].validBit && this->cacheSets[index][i].tag == tag){
                 pos = i;
         }
-        else{
+        else if(this->cacheSets[index][i].validBit && this->cacheSets[index][i].tag != tag){
             this->cacheSets[index][i].lruBit+=1; //increment its lru bit
             if(this->cacheSets[index][i].lruBit > this->cacheSets[index][maxPos].lruBit){
                 maxPos = i;
             }
+        }
+        else{
+            validPos = (validPos == -1 ? i : validPos);
         }
     }
     if(pos != -1){
@@ -146,8 +149,6 @@ void Cache::printRates(){
     else{
         printf("Misclassification rate: %.2f%%\n", 100.00 * (1 - (double)(this->hits)/this->totalAccesses));
     } 
-    if(this->debug){
     printf("Hits: %d\n", this->hits);
     printf("total: %d\n",this->totalAccesses);
-    }
 }
