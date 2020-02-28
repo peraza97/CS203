@@ -7,6 +7,7 @@
 #include <unistd.h>
 #include <iostream>
 #include <map>
+#include <unordered_map>
 #include <vector>
 #include <sstream>
 #include "util.h"
@@ -26,7 +27,7 @@ struct block{
 };
 
 typedef vector<block> cacheLine;
-typedef map<uint32_t, cacheLine> cache_t;
+typedef unordered_map<uint32_t, cacheLine> cache_t;
 
 
 struct bits_t{

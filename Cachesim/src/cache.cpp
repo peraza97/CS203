@@ -14,8 +14,8 @@ Cache::Cache(int cacheSize, int blockSize, int nWays, bool debug){
     if(nWays == 0){
         this->indexbits = 0;
         this->nWays = this->cacheSize/this->blockSize;
-
-    }
+    } 
+    //direct or n-sets
     else{
         int cacheBits = log2(cacheSize);
         this->nWays = nWays;
@@ -85,47 +85,43 @@ bool Cache::accessCache(uint32_t tag, uint32_t index){
     if(this->cacheSets[index].size() == 0){
         this->cacheSets[index] = this->populateLine();
     }
-    cacheLine line = this->cacheSets[index];
-    cacheLine before = line;
 
     int pos = -1;
     int validPos = -1;
     int maxPos = 0;
     //iterate over the cacheSet
     for(int i = 0; i < this->nWays; ++i){
-        if(!line.at(i).validBit){
+        if(!this->cacheSets[index][i].validBit){
             validPos = i;
             break;
         }
-        else if(line.at(i).validBit && line.at(i).tag == tag){
+        else if(this->cacheSets[index][i].validBit && this->cacheSets[index][i].tag == tag){
                 pos = i;
         }
         else{
-            line.at(i).lruBit+=1; //increment its lru bit
-            if(line.at(i).lruBit > line.at(maxPos).lruBit){
+            this->cacheSets[index][i].lruBit+=1; //increment its lru bit
+            if(this->cacheSets[index][i].lruBit > this->cacheSets[index][maxPos].lruBit){
                 maxPos = i;
             }
         }
     }
     if(pos != -1){
-        line.at(pos).lruBit = 0;
+        this->cacheSets[index][pos].lruBit = 0;
     }
     else if(pos == -1 && validPos != -1){
-        line.at(validPos).validBit = 1;
-        line.at(validPos).tag = tag;
-        line.at(validPos).lruBit = 0;    
+        this->cacheSets[index][validPos].validBit = 1;
+        this->cacheSets[index][validPos].tag = tag;
+        this->cacheSets[index][validPos].lruBit = 0;    
     }
     else{
-        line.at(maxPos).tag = tag;
-        line.at(maxPos).lruBit = 0;
+        this->cacheSets[index][maxPos].tag = tag;
+        this->cacheSets[index][maxPos].lruBit = 0;
     }
 
     if(this->debug){
         printf("\nCacheLine Update:\n");
-        this->printCacheLine(before);
-        this->printCacheLine(line);
+        this->printCacheLine(this->cacheSets[index]);
     }
-    this->cacheSets[index] = line;
     return pos != -1;
 }
 
