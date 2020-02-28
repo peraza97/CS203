@@ -10,18 +10,18 @@
 #include <unordered_map>
 #include <vector>
 #include <sstream>
+#include <inttypes.h>
 #include "util.h"
 
 using namespace std;
 
 struct block{
-    uint32_t validBit;
-    uint32_t lruBit;
+    uint32_t lru;
     uint32_t tag;
     int data;
     string str(){
         ostringstream oss;
-        oss << "|v: " << validBit << ", lru: " << lruBit << ", tag: " << tag << "|";
+        oss << "|lru: " << lru << ", tag: " << tag << "|";
         return oss.str();
     }
 };

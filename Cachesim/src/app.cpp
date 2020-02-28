@@ -35,5 +35,4 @@ bool Application::getMemoryAccess(unsigned char & memType, int & offset, string 
         this->inputStream.close();
         return 0;
     }
-    return 0;
 }

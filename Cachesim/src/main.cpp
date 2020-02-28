@@ -45,7 +45,7 @@ int main(int argc, char ** argv){
     string address = "";
     Cache myCache(cacheSize, blockSize, nWays, debug);
     while(app.getMemoryAccess(memType, offset, address)){
-        myCache.checkCache(address, offset);
+       myCache.checkCache(address, offset);
     }
     myCache.printRates();
 

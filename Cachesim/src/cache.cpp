@@ -17,8 +17,8 @@ Cache::Cache(int cacheSize, int blockSize, int nWays, bool debug){
     } 
     //direct or n-sets
     else{
-        int cacheBits = log2(cacheSize);
         this->nWays = nWays;
+        int cacheBits = log2(cacheSize);
         int waysBits = log2(nWays);
         this->indexbits = cacheBits - this->offsetBits - waysBits;
     }
@@ -59,9 +59,10 @@ bits_t Cache::parseAddress(string address, int addressOffset){
         printf("Offset: %d\n",addressOffset);
         printf("address + offest: %lu\n",(unsigned long)conversion32);
         printf("%s\n", formatAddress(conversion32,this->tagBits, this->indexbits, this->offsetBits).c_str() );   
-        printf("offset: %lu\n",(unsigned long)offset);
-        printf("index: %lu\n",(unsigned long)index);
-        printf("tag: %lu\n",(unsigned long)tag);   
+        printf("tag: %" PRIu32 "\n",(uint32_t)tag);
+        printf("index: %" PRIu32 "\n",(uint32_t)index);   
+        printf("offset: %" PRIu32 "\n",(uint32_t)offset);
+
     }  
     bits_t parts = { (uint32_t)tag, (uint32_t)index, (uint32_t)offset} ;
     return parts;
@@ -74,63 +75,44 @@ void Cache::printCacheLine(cacheLine c){
     printf("\n"); 
 }
 
-cacheLine Cache::populateLine(){
-    cacheLine result;
-    for(int i = 0; i < this->nWays; ++i){
-        result.push_back({0,0,0,0});
-    }
-    return result;
-}
-
-bool Cache::accessCache(uint32_t tag, uint32_t index){
-    if(this->cacheSets[index].size() == 0){
-        this->cacheSets[index] = this->populateLine();
-    }
-    if(this->debug){
-        printf("Before: \n");
-        this->printCacheLine(this->cacheSets[index]);
-    }
+bool Cache::accessCache(uint32_t index, uint32_t tag){
     int pos = -1;
-    int validPos = -1;
     int maxPos = 0;
 
-    for(int i = 0; i < this->nWays; ++i){
-        if(this->cacheSets[index][i].validBit && this->cacheSets[index][i].tag == tag){
+    for(int i = 0; i < this->cacheSets[index].size(); ++i){
+        if(this->cacheSets[index][i].tag == tag){
+                if(pos == -1){
                 pos = i;
+                }
+                else{
+                    exit(1); //errrorreoroeoroeroeoroeoeooeor
+                }
         }
-        else if(this->cacheSets[index][i].validBit && this->cacheSets[index][i].tag != tag){
-            this->cacheSets[index][i].lruBit+=1; //increment its lru bit
-            if(this->cacheSets[index][i].lruBit > this->cacheSets[index][maxPos].lruBit){
+        else{
+            this->cacheSets[index][i].lru+=1; //increment its lru bit
+            if(this->cacheSets[index][i].lru > this->cacheSets[index][maxPos].lru){
                 maxPos = i;
             }
         }
-        else{
-            validPos = (validPos == -1 ? i : validPos);
-        }
     }
     if(pos != -1){
-        this->cacheSets[index][pos].lruBit = 0;
-    }
-    else if(pos == -1 && validPos != -1){
-        this->cacheSets[index][validPos].validBit = 1;
-        this->cacheSets[index][validPos].tag = tag;
-        this->cacheSets[index][validPos].lruBit = 0;    
+        this->cacheSets[index][pos].lru = 0;
     }
     else{
-        this->cacheSets[index][maxPos].tag = tag;
-        this->cacheSets[index][maxPos].lruBit = 0;
-    }
-
-    if(this->debug){
-        printf("\nCacheLine Update:\n");
-        this->printCacheLine(this->cacheSets[index]);
+        if(this->cacheSets[index].size() < this->nWays ){
+           this->cacheSets[index].push_back({0,tag,0}); 
+        }
+        else{
+            this->cacheSets[index][maxPos].tag = tag;
+            this->cacheSets[index][maxPos].lru = 0;
+        }
     }
     return pos != -1;
 }
 
 void Cache::checkCache(string address, int addressOffset){
     bits_t bits = this->parseAddress(address, addressOffset);
-    bool hit = this->accessCache(bits.tag, bits.index);
+    bool hit = this->accessCache(bits.index, bits.tag);
     if(hit){
         this->hits += 1;
     }
@@ -147,7 +129,8 @@ void Cache::printRates(){
         printf("Error, Cannot get rate \n");
     }
     else{
-        printf("Misclassification rate: %.2f%%\n", 100.00 * (1 - (double)(this->hits)/this->totalAccesses));
+        printf("Hit rate: %.2f%%\n", 100.00 * (double)(this->hits)/this->totalAccesses);
+        printf("Miss rate: %.2f%%\n", 100.00 * (1 - (double)(this->hits)/this->totalAccesses));
     } 
     printf("Hits: %d\n", this->hits);
     printf("total: %d\n",this->totalAccesses);
