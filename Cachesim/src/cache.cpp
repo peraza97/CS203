@@ -68,46 +68,19 @@ bits_t Cache::parseAddress(string address, int addressOffset){
     return parts;
 }
 
-void Cache::printCacheLine(cacheLine c){
-    for(int i = 0; i < c.size(); ++i){
-        printf("%s\t", c[i].str().c_str());
-    }
-    printf("\n"); 
-}
-
 bool Cache::accessCache(uint32_t index, uint32_t tag){
-    int pos = -1;
-    int maxPos = 0;
-
-    for(int i = 0; i < this->cacheSets[index].size(); ++i){
-        if(this->cacheSets[index][i].tag == tag){
-                if(pos == -1){
-                pos = i;
-                }
-                else{
-                    exit(1); //errrorreoroeoroeroeoroeoeooeor
-                }
-        }
-        else{
-            this->cacheSets[index][i].lru+=1; //increment its lru bit
-            if(this->cacheSets[index][i].lru > this->cacheSets[index][maxPos].lru){
-                maxPos = i;
-            }
-        }
+    bool hit = 0;
+    if(this->cacheSets[index].getSize() == 0){
+        this->cacheSets[index].setCapacity(this->nWays);
+        this->cacheSets[index].put(tag);
     }
-    if(pos != -1){
-        this->cacheSets[index][pos].lru = 0;
+    else if(this->cacheSets[index].get(tag) == 1){
+        hit = 1;
     }
     else{
-        if(this->cacheSets[index].size() < this->nWays ){
-           this->cacheSets[index].push_back({0,tag,0}); 
-        }
-        else{
-            this->cacheSets[index][maxPos].tag = tag;
-            this->cacheSets[index][maxPos].lru = 0;
-        }
+        this->cacheSets[index].put(tag);
     }
-    return pos != -1;
+    return hit;
 }
 
 void Cache::checkCache(string address, int addressOffset){
@@ -124,7 +97,6 @@ void Cache::checkCache(string address, int addressOffset){
 }
 
 void Cache::printRates(){ 
-    printf("------------------------------\n"); 
     if(this->totalAccesses == 0){
         printf("Error, Cannot get rate \n");
     }
@@ -134,4 +106,5 @@ void Cache::printRates(){
     } 
     printf("Hits: %d\n", this->hits);
     printf("total: %d\n",this->totalAccesses);
+    printf("------------------------------\n"); 
 }

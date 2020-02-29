@@ -12,23 +12,13 @@
 #include <sstream>
 #include <inttypes.h>
 #include "util.h"
+#include "cacheLine.h"
 
 using namespace std;
 
-struct block{
-    uint32_t lru;
-    uint32_t tag;
-    int data;
-    string str(){
-        ostringstream oss;
-        oss << "|lru: " << lru << ", tag: " << tag << "|";
-        return oss.str();
-    }
-};
+typedef unordered_map<uint32_t, CacheLine> cache_t;
 
-typedef vector<block> cacheLine;
-typedef unordered_map<uint32_t, cacheLine> cache_t;
-
+enum hit_t{HIT, COLD_MISS, CAP_MISS, CONFLICT_MISS};
 
 struct bits_t{
     uint32_t tag;
@@ -49,8 +39,6 @@ class Cache{
         cache_t cacheSets;
 
         bits_t parseAddress(string, int);
-        void printCacheLine(cacheLine);
-        cacheLine populateLine();
         bool accessCache(uint32_t, uint32_t);
 
     public:
