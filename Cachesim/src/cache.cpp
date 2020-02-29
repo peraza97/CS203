@@ -97,7 +97,7 @@ int Cache::accessCacheLine(uint32_t index, uint32_t tag){
     if(hit){
         type = HIT;
     }
-    else{
+    else{ //need to calculate the other types of misses
         type = COLD_MISS;
     }
     return type;

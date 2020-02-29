@@ -3,6 +3,7 @@
 CacheLine::CacheLine(){
     this->maxSize = 0;
 }
+
 CacheLine::CacheLine(int capacity){
     this->maxSize = capacity;
 }
