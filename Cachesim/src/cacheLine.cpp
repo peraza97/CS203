@@ -26,8 +26,6 @@ int CacheLine::access(uint32_t key){
             tagMap.erase(*(--line.end()));
             line.pop_back();
         }
-        else{ //not full
-        }
         hit = 0; 
     }
     else{ //in the map, remove the iterator
