@@ -1,4 +1,5 @@
 #include "cacheLine.h"
+
 CacheLine::CacheLine(){
     this->maxSize = 0;
 }
@@ -10,44 +11,34 @@ void CacheLine::setCapacity(int capacity){
     this->maxSize = capacity;  
 }
 
-int CacheLine::getSize(){
+int CacheLine::getCapacity(){
     return this->maxSize;
 }
 
-int CacheLine::get(uint32_t key) {
-    if(hash.find(key) == hash.end()) {
-        return -1;
-    }
-    tagIter tag = hash[key];
-    line.erase(tag);
-    hash.erase(key);
-    line.push_front(key);
-    hash[key] = line.begin();
-    return 1;
+int CacheLine::getSize(){
+    return this->line.size();
 }
 
-void CacheLine::put(uint32_t key){
-    if(hash.find(key) == hash.end()) {
-        if(line.size() < maxSize){ //remove end and add to front
-            line.push_front(key);
-            hash[key] = line.begin();
-        }
-        else{
-            tagIter tag = line.end();
-            tag--;
-            hash.erase(*tag);
+int CacheLine::access(uint32_t key){
+    int hit;
+    if(tagMap.find(key) == tagMap.end()){ //not in, need to insert
+        if(line.size() == maxSize){ //full, remove last element
+            tagMap.erase(*(--line.end()));
             line.pop_back();
-            line.push_front(key);
-            hash[key] = line.begin();
         }
+        else{ //not full
+        }
+        hit = 0; 
     }
-    else{
-        tagIter tag = hash[key];
+    else{ //in the map, remove the iterator
+        tagIter tag = tagMap[key];
+        tagMap.erase(key);
         line.erase(tag);
-        hash.erase(key);
-        line.push_front(key);
-        hash[key] = line.begin();  
+        hit = 1;
     }
+    line.push_front(key); //update list
+    tagMap[key] = line.begin();
+    return hit;
 }
 
 string CacheLine::str(){

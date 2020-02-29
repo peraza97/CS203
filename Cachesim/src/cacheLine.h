@@ -9,21 +9,21 @@
 
 using namespace std;
 
-typedef list<uint32_t>tagList;
+typedef list<uint32_t> tagList;
 typedef tagList::iterator tagIter;
 
 class CacheLine{
     private:
         int maxSize;
-        unordered_map<uint32_t,tagIter > hash;
+        unordered_map<uint32_t,tagIter > tagMap;
         tagList line;
     public:
         CacheLine();
         CacheLine(int);
+        int getCapacity();
         int getSize();
         void setCapacity(int);
-        int get(uint32_t);
-        void put(uint32_t);
+        int access(uint32_t);
         string str();
 };
 

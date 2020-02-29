@@ -18,13 +18,12 @@ using namespace std;
 
 typedef unordered_map<uint32_t, CacheLine> cache_t;
 
-enum hit_t{HIT, COLD_MISS, CAP_MISS, CONFLICT_MISS};
-
 struct bits_t{
     uint32_t tag;
     uint32_t index;
     uint32_t offset;
 };
+enum hit_t{HIT, COLD_MISS, CAP_MISS, CONFLICT_MISS};
 
 class Cache{
     private:
@@ -35,11 +34,14 @@ class Cache{
         bool debug;
         int indexbits, tagBits, offsetBits; //bit assignment
         int hits;
+        int coldMisses;
+        int conflictMisses;
+        int capacityMisses;
         int totalAccesses;
         cache_t cacheSets;
 
         bits_t parseAddress(string, int);
-        bool accessCache(uint32_t, uint32_t);
+        int accessCacheLine(uint32_t, uint32_t);
 
     public:
         Cache(int, int, int,bool);
