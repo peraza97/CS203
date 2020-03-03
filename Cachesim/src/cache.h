@@ -34,14 +34,11 @@ class Cache{
         bool debug;
         int indexbits, tagBits, offsetBits; //bit assignment
         int hits;
-        int coldMisses;
-        int conflictMisses;
-        int capacityMisses;
         int totalAccesses;
         cache_t cacheSets;
 
         bits_t parseAddress(string, int);
-        int accessCacheLine(uint32_t, uint32_t);
+        bool accessCacheLine(uint32_t, uint32_t);
 
     public:
         Cache(int, int, int,bool);
