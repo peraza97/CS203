@@ -23,7 +23,6 @@ struct bits_t{
     uint32_t index;
     uint32_t offset;
 };
-enum hit_t{HIT, COLD_MISS, CAP_MISS, CONFLICT_MISS};
 
 class Cache{
     private:

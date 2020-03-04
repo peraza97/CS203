@@ -16,10 +16,6 @@ int CacheLine::getCapacity(){
     return this->maxSize;
 }
 
-int CacheLine::getSize(){
-    return this->line.size();
-}
-
 int CacheLine::access(uint32_t key){
     int hit;
     if(tagMap.find(key) == tagMap.end()){ //not in, need to insert

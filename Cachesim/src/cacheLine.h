@@ -21,7 +21,6 @@ class CacheLine{
         CacheLine();
         CacheLine(int);
         int getCapacity();
-        int getSize();
         void setCapacity(int);
         int access(uint32_t);
         string str();
