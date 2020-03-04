@@ -23,6 +23,9 @@ uint32_t convertSizeInput(string input){
     else if(suffix == "MB"){
         bits += 20;
     }
+    else if(suffix == "GB"){
+        bits += 30;
+    }
     else{
         return 0;
     }

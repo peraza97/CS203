@@ -1,6 +1,6 @@
 #include "cache.h"
 
-Cache::Cache(int cacheSize, int blockSize, int nWays, bool debug){
+Cache::Cache(uint32_t cacheSize, uint32_t blockSize, int nWays, bool debug){
     this->cacheSize = cacheSize;
     this->blockSize = blockSize;
     this->hits = 0;
@@ -27,7 +27,7 @@ Cache::Cache(int cacheSize, int blockSize, int nWays, bool debug){
     this->tagBits = ADDRESS_LENGTH - this->indexbits - this->offsetBits;
 
     printf("------------------------------\n");
-    printf("Cache size: %d Byte(s)\nBlock Size: %d Byte(s)\nSets: %d\nWays: %d\nTag bits: %d\nIndex bits: %d\nOffset bits: %d\n", 
+    printf("Cache size: %" PRIu32 " Byte(s)\nBlock Size: %" PRIu32 " Byte(s)\nSets: %d\nWays: %d\nTag bits: %d\nIndex bits: %d\nOffset bits: %d\n", 
             this->cacheSize, this->blockSize, this->sets, this->nWays, this->tagBits, this->indexbits, this->offsetBits);
     printf("------------------------------\n");
 }

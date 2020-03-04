@@ -27,8 +27,8 @@ enum hit_t{HIT, COLD_MISS, CAP_MISS, CONFLICT_MISS};
 
 class Cache{
     private:
-        int cacheSize;
-        int blockSize;
+        uint32_t cacheSize;
+        uint32_t blockSize;
         int sets;
         int nWays; //1: direct, 0: fully associative
         bool debug;
@@ -41,7 +41,7 @@ class Cache{
         bool accessCacheLine(uint32_t, uint32_t);
 
     public:
-        Cache(int, int, int,bool);
+        Cache(uint32_t, uint32_t, int, bool);
         void checkCache(string, int);
         void printRates();
 

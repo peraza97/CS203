@@ -30,8 +30,8 @@ int main(int argc, char ** argv){
         }
     }
 
-    int cacheSize = convertSizeInput(cacheString);
-    int blockSize = convertSizeInput(blockString);
+    uint32_t cacheSize = convertSizeInput(cacheString);
+    uint32_t blockSize = convertSizeInput(blockString);
     if(cacheSize == 0 || blockSize == 0 || (cacheSize < blockSize)){
         printf("Error assigning cacheSize or block size\n");
         return -1;
